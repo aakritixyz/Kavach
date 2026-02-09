@@ -41,7 +41,6 @@
 
         /* 1. STEALTH DISGUISE */
         #stealth-screen { background: var(--light-gray); text-align: center; justify-content: center; }
-        /* EDITED: transition set to 0.1s for faster visual feedback */
         .logo-btn { width: 120px; height: 120px; background: #fff; border-radius: 35px; margin: 0 auto 30px; padding: 25px; box-shadow: var(--shadow); cursor: pointer; transition: 0.1s; }
         .logo-btn:active { transform: scale(0.9); }
         .clean-item { background: #fff; padding: 22px; border-radius: 20px; margin-bottom: 12px; font-weight: 800; color: #444; border: 2px solid #E2E8F0; cursor: pointer; }
@@ -52,6 +51,13 @@
         .card { background: var(--card); padding: 24px; border-radius: 32px; box-shadow: var(--shadow); cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
         .card:active { background: #FFF5F5; border-color: var(--primary); }
         .card-icon { width: 50px; height: 50px; border-radius: 18px; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; font-size: 26px; }
+
+        /* SAFETY CHECK-IN SPECIFIC */
+        #checkin-screen { background: #fff; text-align: center; }
+        .checkin-circle { width: 140px; height: 140px; background: #D1FAE5; color: #10B981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 40px auto; font-size: 60px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2); transition: 0.5s; }
+        .checkin-circle.success { background: var(--secondary); color: white; transform: scale(1.1); }
+        .message-box { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 24px; padding: 20px; margin-top: 30px; text-align: left; }
+        .contact-pill { font-size: 12px; background: #EEF2FF; color: #4F46E5; padding: 4px 12px; border-radius: 12px; font-weight: 700; margin-top: 10px; display: inline-block; }
 
         /* 3. BRIGHT PATH MAP */
         .map-container { width: 100%; height: 380px; background: #e5e5e5; border-radius: 30px; position: relative; overflow: hidden; margin-top: 20px; border: 3px solid #fff; box-shadow: var(--shadow); }
@@ -113,25 +119,47 @@
                     <h3>Bright Path</h3>
                     <p>Lit-up routes</p>
                 </div>
+                <div class="card" onclick="navigateTo('checkin-screen')">
+                    <div class="card-icon" style="background: #FFFBEB; color: #D97706;"><i class="ri-checkbox-circle-fill"></i></div>
+                    <h3>Safety Check</h3>
+                    <p>I've Arrived</p>
+                </div>
                 <div class="card" onclick="navigateTo('blackbox-screen')">
                     <div class="card-icon" style="background: #FFF5F5; color: #E53E3E;"><i class="ri-mic-fill"></i></div>
                     <h3>Black Box</h3>
                     <p>Tamper-proof</p>
                 </div>
-                <div class="card" onclick="navigateTo('shake-screen')">
-                    <div class="card-icon" style="background: #FAF5FF; color: #805AD5;"><i class="ri-shake-hands-fill"></i></div>
-                    <h3>Shake Alert</h3>
-                    <p>Pocket Trigger</p>
-                </div>
             </div>
 
             <div class="card" style="margin-top: 20px; display: flex; align-items: center; gap: 15px;" onclick="navigateTo('contacts-screen')">
-                <div class="card-icon" style="margin: 0; background: #FFFBF0; color: #D69E2E;"><i class="ri-group-fill"></i></div>
-                <div style="flex:1"><h3>Trusted Contacts</h3><p>Mom, Dad, Police</p></div>
+                <div class="card-icon" style="margin: 0; background: #F5F3FF; color: #7C3AED;"><i class="ri-group-fill"></i></div>
+                <div style="flex:1"><h3>SOS Circle</h3><p>Mom, Dad, Bestie</p></div>
                 <i class="ri-arrow-right-s-line"></i>
             </div>
 
             <button class="btn-main" onclick="navigateTo('blackbox-screen')">PANIC: START RECORDING</button>
+        </div>
+
+        <div id="checkin-screen" class="screen">
+            <i class="ri-arrow-left-line back-arrow" onclick="navigateTo('home-screen')"></i>
+            <h1>Safety Check-In</h1>
+            <p>Notify your circle that you've reached safely.</p>
+            
+            <div class="checkin-circle" id="checkin-btn" onclick="sendCheckIn()">
+                <i class="ri-check-line"></i>
+            </div>
+
+            <p id="checkin-status" style="font-weight: 800; color: #10B981; margin-bottom: 20px;">Tap to send update</p>
+
+            <div class="message-box">
+                <h3 style="font-size: 14px; margin-bottom: 10px; color: #374151;">Message Preview</h3>
+                <p style="font-style: italic; color: #6B7280; font-weight: 500;">"Hey! I've reached safely. Everything is okay. 💖"</p>
+                <div class="contact-pill"><i class="ri-send-plane-fill"></i> Sending to: Mom, Dad, Bestie</div>
+            </div>
+
+            <div id="success-notif" style="display:none; margin-top: 20px; background: #ECFDF5; border: 1px solid #10B981; padding: 15px; border-radius: 16px;">
+                <p style="color: #065F46;">Check-in Sent! Your contacts have been notified.</p>
+            </div>
         </div>
 
         <div id="map-screen" class="screen">
@@ -147,162 +175,105 @@
                 <i class="ri-map-pin-2-fill" style="position: absolute; bottom: 10%; left: 47%; font-size: 30px; color: var(--primary);"></i>
                 <i class="ri-user-follow-fill" style="position: absolute; top: 10%; left: 47%; font-size: 30px; color: #007AFF;"></i>
             </div>
-
-            <div style="margin-top: 20px; background: #F0FFF4; padding: 20px; border-radius: 20px;">
-                <h3 style="color: #2F855A;">SAFE ROUTE FOUND</h3>
-                <p>Path has 12 active streetlights and 2 police kiosks nearby.</p>
-            </div>
         </div>
 
         <div id="blackbox-screen" class="screen" style="background: #000; color: white;">
             <i class="ri-arrow-left-line back-arrow" style="color: white;" onclick="navigateTo('home-screen')"></i>
             <h1 style="color: white;">Black Box</h1>
-            <p style="color: #888;">Legal-grade evidence gathering...</p>
-
             <div class="recording-ui">
                 <div class="wave-box">
-                    <div class="wave-bar" style="animation-delay: 0.1s"></div>
-                    <div class="wave-bar" style="animation-delay: 0.3s"></div>
-                    <div class="wave-bar" style="animation-delay: 0.5s"></div>
-                    <div class="wave-bar" style="animation-delay: 0.2s"></div>
-                    <div class="wave-bar" style="animation-delay: 0.4s"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
                 </div>
                 <h2 style="color: var(--primary);">RECORDING AUDIO</h2>
-                <p style="color: #666; margin-top: 10px;">Hashing file for court-ready validation...</p>
             </div>
-
-            <div class="hash-log" id="hash-display">
-                SHA-256: Waiting for data chunk...
-            </div>
+            <div class="hash-log" id="hash-display">SHA-256: Waiting...</div>
             <button class="btn-main" style="background: #222;" onclick="navigateTo('home-screen')">SAVE & ENCRYPT</button>
         </div>
 
         <div id="ghost-call-screen" class="screen ghost-call-ui">
-            <p style="letter-spacing: 3px; font-weight: 800; font-size: 12px; opacity: 0.7;">INCOMING CALL</p>
             <h1 style="color: white; font-size: 42px; margin: 20px 0;">Dad 👨‍💼</h1>
-            <p style="color: var(--secondary); font-size: 18px;">Mobile +91 98765 43210</p>
-            
+            <p style="color: var(--secondary); font-size: 18px;">Incoming Call...</p>
             <div class="action-btns">
-                <div style="text-align: center;">
-                    <button class="round-btn" style="background: #FF3B30;" onclick="navigateTo('home-screen')"><i class="ri-phone-fill" style="transform: rotate(135deg);"></i></button>
-                    <p style="margin-top: 15px; font-weight: 800;">Decline</p>
-                </div>
-                <div style="text-align: center;">
-                    <button class="round-btn" style="background: #34C759;" onclick="alert('Decoy Active. Speak clearly.')"><i class="ri-phone-fill"></i></button>
-                    <p style="margin-top: 15px; font-weight: 800;">Accept</p>
-                </div>
+                <button class="round-btn" style="background: #FF3B30;" onclick="navigateTo('home-screen')"><i class="ri-phone-fill" style="transform: rotate(135deg);"></i></button>
+                <button class="round-btn" style="background: #34C759;" onclick="alert('Decoy Active.')"><i class="ri-phone-fill"></i></button>
             </div>
-        </div>
-
-        <div id="shake-screen" class="screen">
-            <i class="ri-arrow-left-line back-arrow" onclick="navigateTo('home-screen')"></i>
-            <h1>Shake to Wake</h1>
-            <p>Panic trigger that works in your pocket.</p>
-            
-            <div class="card" style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center; padding: 30px;">
-                <h3>Active Monitoring</h3>
-                <div style="width: 60px; height: 32px; background: var(--secondary); border-radius: 20px; position: relative;">
-                    <div style="width: 26px; height: 26px; background: white; border-radius: 50%; position: absolute; right: 3px; top: 3px;"></div>
-                </div>
-            </div>
-            <div style="text-align: center; margin-top: 50px;">
-                <i class="ri-shake-hands-line" style="font-size: 100px; color: var(--primary); opacity: 0.2;"></i>
-                <p style="margin-top: 20px;">Hard shake (3x) triggers SOS immediately.</p>
-            </div>
-        </div>
-
-        <div id="contacts-screen" class="screen">
-            <i class="ri-arrow-left-line back-arrow" onclick="navigateTo('home-screen')"></i>
-            <h1>SOS Circle</h1>
-            <div class="card" style="margin-top: 20px; display: flex; gap: 15px;">
-                <div style="width: 45px; height: 45px; background: #eee; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 800;">M</div>
-                <div style="flex:1"><h3>Mom</h3><p>Verified SOS Recipient</p></div>
-            </div>
-            <div class="card" style="margin-top: 10px; display: flex; gap: 15px;">
-                <div style="width: 45px; height: 45px; background: #eee; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 800;">D</div>
-                <div style="flex:1"><h3>Dad</h3><p>Verified SOS Recipient</p></div>
-            </div>
-            <button class="btn-main" style="background: #E2E8F0; color: #444; box-shadow: none;">ADD CONTACT</button>
         </div>
 
     </div>
 
     <script>
-        // CORE NAVIGATION
         function navigateTo(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            
-            // EDITED: Trigger vibration when secret screen opens
-            if (id === 'home-screen') {
-                if ("vibrate" in navigator) navigator.vibrate([100, 30, 100]);
-            }
-            
+            if (id === 'home-screen' && "vibrate" in navigator) navigator.vibrate([100, 30, 100]);
             if(id === 'blackbox-screen') startHashing();
         }
 
-        // 1. STEALTH "SECRET HANDSHAKE"
+        // STEALTH TRIGGER
         const trigger = document.getElementById('handshake-trigger');
         let pressTimer;
-
         trigger.addEventListener('mousedown', () => pressTimer = setTimeout(() => navigateTo('home-screen'), 800));
         trigger.addEventListener('touchstart', () => pressTimer = setTimeout(() => navigateTo('home-screen'), 800));
         trigger.addEventListener('mouseup', () => clearTimeout(pressTimer));
         trigger.addEventListener('touchend', () => clearTimeout(pressTimer));
 
-        // 2. DISGUISE FAKE ACTIONS
+        // FAKE CLEAN
         function fakeClean(el) {
             const originalText = el.innerText;
             el.innerText = "Cleaning...";
-            el.style.opacity = "0.6";
-            
-            // EDITED: Tiny vibration for cleaner button
             if ("vibrate" in navigator) navigator.vibrate(20);
-
             setTimeout(() => {
                 el.innerText = "Optimized!";
-                el.style.color = "var(--secondary)";
-                setTimeout(() => {
-                    el.innerText = originalText;
-                    el.style.opacity = "1";
-                    el.style.color = "#444";
-                }, 1000);
+                setTimeout(() => el.innerText = originalText, 1000);
             }, 1500);
         }
 
-        // 3. GHOST CALL TIMER
-        function startGhostCall() {
-            alert("Ghost Call scheduled. It will ring in 5 seconds.");
+        // SAFETY CHECK-IN LOGIC
+        function sendCheckIn() {
+            const btn = document.getElementById('checkin-btn');
+            const status = document.getElementById('checkin-status');
+            const notif = document.getElementById('success-notif');
+            
+            if ("vibrate" in navigator) navigator.vibrate([50, 50, 200]);
+            
+            btn.classList.add('success');
+            status.innerText = "Notifying Circle...";
+            
             setTimeout(() => {
-                navigateTo('ghost-call-screen');
-            }, 5000);
+                status.innerText = "Check-in Sent!";
+                notif.style.display = "block";
+                confettiEffect();
+            }, 1000);
         }
 
-        // 4. BLACK BOX HASHING (LEGAL PROOF SIM)
+        function confettiEffect() {
+            // Simple visual feedback
+            const btn = document.getElementById('checkin-btn');
+            btn.style.boxShadow = "0 0 50px rgba(52, 199, 89, 0.6)";
+        }
+
+        // GHOST CALL
+        function startGhostCall() {
+            alert("Ghost Call scheduled (5s)");
+            setTimeout(() => navigateTo('ghost-call-screen'), 5000);
+        }
+
+        // BLACK BOX
         function startHashing() {
             const display = document.getElementById('hash-display');
-            const chars = '0123456789abcdef';
             let cycle = setInterval(() => {
-                let hash = "SHA-256: ";
-                for(let i=0; i<42; i++) hash += chars[Math.floor(Math.random() * 16)];
-                display.innerText = hash;
-            }, 80);
-
+                display.innerText = "SHA-256: " + Math.random().toString(16).slice(2, 14);
+            }, 100);
             setTimeout(() => {
                 clearInterval(cycle);
-                display.innerText = "SHA-256: 8f92b3c... SIGNED & SENT TO CLOUD";
-                display.style.color = "var(--secondary)";
-            }, 4000);
+                display.innerText = "SHA-256: 8f92b3c... SECURED";
+            }, 3000);
         }
-        
-        // 5. SHAKE SIMULATOR (Press 'S' on Keyboard)
+
         window.addEventListener('keydown', (e) => {
-            if(e.key.toLowerCase() === 's') {
-                // EDITED: Long vibration for panic trigger
-                if ("vibrate" in navigator) navigator.vibrate([500, 200, 500]);
-                alert("Shake Detected! Triggering Blackbox SOS.");
-                navigateTo('blackbox-screen');
-            }
+            if(e.key.toLowerCase() === 's') navigateTo('blackbox-screen');
         });
     </script>
 </body>
