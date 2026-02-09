@@ -41,7 +41,8 @@
 
         /* 1. STEALTH DISGUISE */
         #stealth-screen { background: var(--light-gray); text-align: center; justify-content: center; }
-        .logo-btn { width: 120px; height: 120px; background: #fff; border-radius: 35px; margin: 0 auto 30px; padding: 25px; box-shadow: var(--shadow); cursor: pointer; transition: 0.2s; }
+        /* EDITED: transition set to 0.1s for faster visual feedback */
+        .logo-btn { width: 120px; height: 120px; background: #fff; border-radius: 35px; margin: 0 auto 30px; padding: 25px; box-shadow: var(--shadow); cursor: pointer; transition: 0.1s; }
         .logo-btn:active { transform: scale(0.9); }
         .clean-item { background: #fff; padding: 22px; border-radius: 20px; margin-bottom: 12px; font-weight: 800; color: #444; border: 2px solid #E2E8F0; cursor: pointer; }
 
@@ -87,7 +88,7 @@
             <div class="clean-item" onclick="fakeClean(this)">Clear Junk Files</div>
             <div class="clean-item" onclick="fakeClean(this)">Boost RAM Speed</div>
             <div class="clean-item" onclick="fakeClean(this)">Cool Down CPU</div>
-            <p style="margin-top: 40px; opacity: 0.3; font-size: 10px;">Hold logo for 3s to enter diagnostic mode</p>
+            <p style="margin-top: 40px; opacity: 0.3; font-size: 10px;">Hold logo for 1s to enter diagnostic mode</p>
         </div>
 
         <div id="home-screen" class="screen">
@@ -231,6 +232,12 @@
         function navigateTo(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            
+            // EDITED: Trigger vibration when secret screen opens
+            if (id === 'home-screen') {
+                if ("vibrate" in navigator) navigator.vibrate([100, 30, 100]);
+            }
+            
             if(id === 'blackbox-screen') startHashing();
         }
 
@@ -238,8 +245,8 @@
         const trigger = document.getElementById('handshake-trigger');
         let pressTimer;
 
-        trigger.addEventListener('mousedown', () => pressTimer = setTimeout(() => navigateTo('home-screen'), 3000));
-        trigger.addEventListener('touchstart', () => pressTimer = setTimeout(() => navigateTo('home-screen'), 3000));
+        trigger.addEventListener('mousedown', () => pressTimer = setTimeout(() => navigateTo('home-screen'), 800));
+        trigger.addEventListener('touchstart', () => pressTimer = setTimeout(() => navigateTo('home-screen'), 800));
         trigger.addEventListener('mouseup', () => clearTimeout(pressTimer));
         trigger.addEventListener('touchend', () => clearTimeout(pressTimer));
 
@@ -248,6 +255,10 @@
             const originalText = el.innerText;
             el.innerText = "Cleaning...";
             el.style.opacity = "0.6";
+            
+            // EDITED: Tiny vibration for cleaner button
+            if ("vibrate" in navigator) navigator.vibrate(20);
+
             setTimeout(() => {
                 el.innerText = "Optimized!";
                 el.style.color = "var(--secondary)";
@@ -283,10 +294,12 @@
                 display.style.color = "var(--secondary)";
             }, 4000);
         }
-
+        
         // 5. SHAKE SIMULATOR (Press 'S' on Keyboard)
         window.addEventListener('keydown', (e) => {
             if(e.key.toLowerCase() === 's') {
+                // EDITED: Long vibration for panic trigger
+                if ("vibrate" in navigator) navigator.vibrate([500, 200, 500]);
                 alert("Shake Detected! Triggering Blackbox SOS.");
                 navigateTo('blackbox-screen');
             }
