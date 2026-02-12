@@ -265,8 +265,8 @@
         // STEALTH TRIGGER
         const trigger = document.getElementById('handshake-trigger');
         let pressTimer;
-        trigger.addEventListener('mousedown', () => pressTimer = setTimeout(() => navigateTo('home-screen'), 800));
-        trigger.addEventListener('touchstart', () => pressTimer = setTimeout(() => navigateTo('home-screen'), 800));
+        trigger.addEventListener('mousedown', () => pressTimer = setTimeout(() => navigateTo('home-screen'), 500));
+        trigger.addEventListener('touchstart', () => pressTimer = setTimeout(() => navigateTo('home-screen'), 500));
         trigger.addEventListener('mouseup', () => clearTimeout(pressTimer));
         trigger.addEventListener('touchend', () => clearTimeout(pressTimer));
 
